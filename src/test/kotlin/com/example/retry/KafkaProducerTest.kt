@@ -20,4 +20,8 @@ class KafkaProducerTest {
 		producer.send(CustomProducer.OtherUserInfo("홍길동", 12))
 	}
 
+	@Test
+	fun something3() {
+		producer.sendToRetryTopic(CustomProducer.UserInfo("홍길동", "010-1234-5678", "홍홍"))
+	}
 }
