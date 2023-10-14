@@ -10,27 +10,21 @@ import org.springframework.kafka.retrytopic.DltStrategy
 import org.springframework.kafka.retrytopic.TopicSuffixingStrategy
 import java.util.concurrent.TimeoutException
 @Component
-@KafkaListener(groupId = "sample-1", topics = ["testTopic"])
 class ConsumerController {
 
-    //todo test
-    @KafkaHandler
+    @KafkaListener(groupId = "sample-1", topics = ["testTopic"])
     @RetryableTopic(
         backoff = Backoff(value = 3000L),
         attempts = "4",
         autoCreateTopics = "true", //default
         topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE, // -0, -1 suffix
-        dltStrategy = DltStrategy.FAIL_ON_ERROR, // dlt 전송 전략
-        include = [TimeoutException::class], //리트라이함
-        exclude = [NullPointerException::class] //리트라이 안함
     )
-    fun consume(userInfo: UserInfo) {
-        println(userInfo)
-    }
-
-    @KafkaHandler
-    fun consume(userInfo: OtherUserInfo) {
-        println(userInfo)
+    fun consume(user: User) {
+        when (user) {
+            is UserInfo -> println("user: $user")
+            is OtherUserInfo -> println("other user: $user")
+        }
+        throw NullPointerException("Exception!")
     }
 
     @DltHandler
@@ -38,14 +32,15 @@ class ConsumerController {
         println("dlt event: $event")
     }
 
+    interface User
 
     data class UserInfo(
         val name: String,
         val phoneNumber: String
-    )
+    ): User
 
     data class OtherUserInfo(
         val address: String,
         val age: Int
-    )
+    ): User
 }
