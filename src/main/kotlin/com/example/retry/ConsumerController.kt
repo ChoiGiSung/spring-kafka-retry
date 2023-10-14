@@ -17,7 +17,9 @@ class ConsumerController {
         backoff = Backoff(value = 3000L),
         attempts = "4",
         autoCreateTopics = "true", //default
-        topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE, // -0, -1 suffix
+        topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE, // -0, -1 suffix,
+        retryTopicSuffix = "-coco-retry",
+        dltTopicSuffix = "-coco-dlt"
     )
     fun consume(user: User) {
         when (user) {

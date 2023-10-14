@@ -16,7 +16,7 @@ class CustomProducer(
     }
 
     fun sendToRetryTopic(userInfo: UserInfo) {
-        kafkaTemplate.send("testTopic-retry-0", userInfo)
+        kafkaTemplate.send("testTopic-coco-retry-0", userInfo)
     }
 
     data class UserInfo(
