@@ -1,4 +1,9 @@
 # kafka
 docker-compose up -d  
 docker-compose down  
-docker exec -it kafka kafka-topics.sh --bootstrap-server localhost:9092 --create --topic testTopic 
+
+# docker
+docker exec -it mysql bash
+mysql -u root -p
+[//]: # (create database ;)
+[//]: # (use coupon_example;)
