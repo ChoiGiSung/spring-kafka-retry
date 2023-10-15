@@ -13,25 +13,12 @@ import java.util.concurrent.TimeoutException
 class ConsumerController {
 
     @KafkaListener(groupId = "sample-1", topics = ["testTopic"])
-    @RetryableTopic(
-        backoff = Backoff(value = 3000L),
-        attempts = "4",
-        autoCreateTopics = "true", //default
-        topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE, // -0, -1 suffix,
-        retryTopicSuffix = "-coco-retry",
-        dltTopicSuffix = "-coco-dlt"
-    )
     fun consume(user: User) {
         when (user) {
             is UserInfo -> println("user: $user")
             is OtherUserInfo -> println("other user: $user")
         }
         throw NullPointerException("Exception!")
-    }
-
-    @DltHandler
-    fun handleDlt(event: Any) {
-        println("dlt event: $event")
     }
 
     interface User
