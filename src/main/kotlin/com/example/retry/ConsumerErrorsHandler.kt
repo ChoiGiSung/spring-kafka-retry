@@ -9,7 +9,7 @@ class ConsumerErrorsHandler {
     fun postProcessDltMessage(
         record: ConsumerRecord<String?, String?>,
         @Header(KafkaHeaders.RECEIVED_TOPIC) topic: String?,
-        @Header(KafkaHeaders.RECEIVED_PARTITION_ID) partitionId: Int,
+        @Header(KafkaHeaders.RECEIVED_PARTITION) partitionId: Int,
         @Header(KafkaHeaders.OFFSET) offset: Long?,
         @Header(KafkaHeaders.EXCEPTION_MESSAGE) errorMessage: String?,
         @Header(KafkaHeaders.GROUP_ID) groupId: String?
