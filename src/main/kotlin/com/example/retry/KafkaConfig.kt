@@ -1,6 +1,8 @@
 package com.example.retry
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.apache.kafka.clients.consumer.Consumer
+import org.apache.kafka.common.header.Header
 import org.springframework.boot.autoconfigure.kafka.DefaultKafkaConsumerFactoryCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -11,8 +13,11 @@ import org.springframework.kafka.retrytopic.RetryTopicConfiguration
 import org.springframework.kafka.retrytopic.RetryTopicConfigurationBuilder
 import org.springframework.kafka.retrytopic.TopicSuffixingStrategy
 import org.springframework.kafka.support.EndpointHandlerMethod
+import org.springframework.kafka.support.KafkaHeaders
+import org.springframework.kafka.support.mapping.DefaultJackson2JavaTypeMapper
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
 import org.springframework.kafka.support.serializer.JsonDeserializer
+import java.nio.charset.StandardCharsets
 
 
 @Configuration
@@ -55,7 +60,18 @@ class KafkaConfig(
                 objectMapper
             )
         )
+
+        errorHandlingDeserializer.setFailedDeserializationFunction {
+            val headerIterator: Iterator<Header> =
+                it.headers.headers(DefaultJackson2JavaTypeMapper.DEFAULT_CLASSID_FIELD_NAME).iterator()
+            if (!headerIterator.hasNext()) {
+                return@setFailedDeserializationFunction null
+            }
+            val token = String(headerIterator.next().value(), StandardCharsets.UTF_8)
+            return@setFailedDeserializationFunction if (token == "sample") null else "do something"
+        }
         return errorHandlingDeserializer
     }
+
 
 }
